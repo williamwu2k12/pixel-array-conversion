@@ -23,7 +23,7 @@ function createArray(dimension, size, value, array)
 }
 
 
-function createCube(radius, red, green, blue, alpha)
+function createCubeOld(radius, red, green, blue, alpha)
 {
 	var cube = createArray(3, radius, [0, 0, 0, 0]);
 	var color = [red, green, blue, alpha];
@@ -52,7 +52,29 @@ function createCube(radius, red, green, blue, alpha)
 }
 
 
-function render3D(array, point, center)
+function createCube(radius)
+{
+	var cornerArray = new Array();
+	for (index = -radius; index < radius; index = index + 1)
+	{
+		cornerArray.push({"xPosition": -radius, "yPosition": -radius, "zPosition": index});
+		cornerArray.push({"xPosition": radius, "yPosition": -radius, "zPosition": index});
+		cornerArray.push({"xPosition": -radius, "yPosition": radius, "zPosition": index});
+		cornerArray.push({"xPosition": radius, "yPosition": radius, "zPosition": index});
+		cornerArray.push({"xPosition": -radius, "yPosition": index, "zPosition": -radius});
+		cornerArray.push({"xPosition": radius, "yPosition": index, "zPosition": -radius});
+		cornerArray.push({"xPosition": -radius, "yPosition": index, "zPosition": radius});
+		cornerArray.push({"xPosition": radius, "yPosition": index, "zPosition": radius});
+		cornerArray.push({"xPosition": index, "yPosition": -radius, "zPosition": -radius});
+		cornerArray.push({"xPosition": index, "yPosition": -radius, "zPosition": radius});
+		cornerArray.push({"xPosition": index, "yPosition": radius, "zPosition": -radius});
+		cornerArray.push({"xPosition": index, "yPosition": radius, "zPosition": radius});
+	}
+	return cornerArray;
+}
+
+
+function render3DOld(array, point, center)
 {
 //	var flatArray = createArray(2, Math.floor(Math.sqrt(2) * array.length) + 1, [0, 0, 0, 0]);
 
@@ -134,11 +156,77 @@ function render3D(array, point, center)
 	return cornerArray;
 }
 
-var square = createArray(3, 3, "value");
-console.log(square[0][0][0]); // keep in mind that when the array exceeds are certain amount of recursive arrays, instead of displaying value, the console will display "object"
 
-var cube = createCube(20, 255, 0, 0, 255);
-console.log(cube[0][0][0]);
 
-var flatCube = render3D(cube, {"xPosition": 0, "yPosition": 10, "zPosition": 10}, {"xPosition": 10, "yPosition": 10, "zPosition": 10});
+
+function render3D(array, radius, point, center)
+{
+	var cornerArray = new Array();
+	var vector = 
+	{
+		"xComponent": point.xPosition - center.xPosition,
+		"yComponent": point.yPosition - center.yPosition,
+		"zComponent": point.zPosition - center.zPosition
+	}
+	var perpendicular = 
+	{
+		"xComponent": Math.sqrt((vector.yComponent * vector.yComponent) / ((vector.xComponent * vector.xComponent) + (vector.yComponent * vector.yComponent))),
+		"yComponent": Math.sqrt((vector.xComponent * vector.xComponent) / ((vector.xComponent * vector.xComponent) + (vector.yComponent * vector.yComponent))),
+		"zComponent": 0
+	}
+	var normal = 
+	{
+		"xComponent": vector.yComponent * perpendicular.zComponent - vector.zComponent * perpendicular.yComponent,
+		"yComponent": vector.zComponent * perpendicular.xComponent - vector.xComponent * perpendicular.zComponent,
+		"zComponent": vector.xComponent * perpendicular.yComponent - vector.yComponent * perpendicular.xComponent
+	}
+	var shift = new Array(); // shift is a grid array, meaning it represents the plane from the perspective/point you're viewing
+	for (index = Math.floor(Math.sqrt(2) * (-radius)); index < Math.sqrt(2) * (radius); index = index + 1)
+	{
+		shift.push(index);
+	}
+	var tempPoint;
+	for (indexA = 0; indexA < shift.length; indexA = indexA + 1)
+	{
+		for (indexB = 0; indexB < shift.length; indexB = indexB + 1)
+		{
+			tempPoint = 
+			{
+				"xPosition": point.xPosition + (shift[indexA] * perpendicular.xComponent + shift[indexB] * normal.xComponent),
+				"yPosition": point.yPosition + (shift[indexA] * perpendicular.yComponent + shift[indexB] * normal.yComponent),
+				"zPosition": point.zPosition + (shift[indexA] * perpendicular.zComponent + shift[indexB] * normal.zComponent)
+			}
+			for (index = 0; index < array.length; index = index + 1) // it's because vector components are too large
+			{
+				var diffX = vector.xComponent / (tempPoint.xPosition - array[index].xPosition);
+				var diffY = vector.yComponent / (tempPoint.yPosition - array[index].yPosition);
+				var diffZ = vector.zComponent / (tempPoint.zPosition - array[index].zPosition);
+				if (diffX / diffY < 1.05 && diffX / diffY > 0.95 && diffX / diffZ < 1.05 && diffX / diffZ > 0.95 && diffZ / diffY < 1.05 && diffZ / diffY > 0.95)
+				{
+					cornerArray.push({"xPosition": shift[indexA], "yPosition": shift[indexB]});
+				}
+//				if ((Math.abs(tempPoint.xPosition - array[index].xPosition - vector.xComponent) < 1 && Math.abs(tempPoint.yPosition - array[index].yPosition - vector.yComponent) < 1 && Math.abs(tempPoint.zPosition - array[index].zPosition - vector.zComponent) < 1) || (Math.abs(tempPoint.xPosition - array[index].xPosition + vector.xComponent) < 1 && Math.abs(tempPoint.yPosition - array[index].yPosition + vector.yComponent) < 1 && Math.abs(tempPoint.zPosition - array[index].zPosition + vector.zComponent) < 1)) // if the vectors are approximately the same
+//				{
+//					cornerArray.push({"xPosition": shift[indexA], "yPosition": shift[indexB]});
+//				}
+			}
+		}
+	}
+	return cornerArray;
+}
+
+
+
+
+// var square = createArray(3, 3, "value");
+// console.log(square[0][0][0]); // keep in mind that when the array dimensions exceeds are higher, instead of displaying value, the console will display "object"
+
+// var cube = createCubeOld(20, 255, 0, 0, 255);
+// console.log(cube[0][0][0]);
+
+// var flatCube = render3DOld(cube, {"xPosition": 0, "yPosition": 10, "zPosition": 10}, {"xPosition": 10, "yPosition": 10, "zPosition": 10});
+// console.log(flatCube);
+
+var cube = createCube(50);
+var flatCube = render3D(cube, 50, {"xPosition": 67, "yPosition": -58, "zPosition": -41}, {"xPosition": 0, "yPosition": 0, "zPosition": 0})
 console.log(flatCube);
