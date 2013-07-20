@@ -227,6 +227,7 @@ function convert3D(array, radius, point, center)
 }
 
 
+
 var radius = 50;
 var cube = createCube(radius);
 var flatCube = convert3D(cube, 50, {"xPosition": tempX, "yPosition": tempY, "zPosition": tempZ}, {"xPosition": 0, "yPosition": 0, "zPosition": 0});

@@ -1,3 +1,6 @@
+// last known working fiddle:
+// http://jsfiddle.net/KbUSR/
+
 function createArray(dimension, size, value, array)
 {
 	if (array == null || array == undefined)
@@ -172,18 +175,18 @@ function removeDuplicates(cornerArray)
     return returnArray;
 }
 
-
-
-var canvas = document.getElementById("canvasID");
-var ctx = canvas.getContext("2d");
-var canvasData = ctx.createImageData(500, 500);
-drawShape(flatCube, canvasData, 0, 0, 0, 255);
-ctx.putImageData(canvasData, 0, 0);
-
-
+var tempX = 67;
+var tempY = 20;
+var tempZ = 52;
 
 var radius = 50;
 var cube = createCube(radius);
 var flatCube = convert3D(cube, 50, {"xPosition": tempX, "yPosition": tempY, "zPosition": tempZ}, {"xPosition": 0, "yPosition": 0, "zPosition": 0});
 flatCube = removeDuplicates(flatCube);
 flatCube = shiftArray(flatCube, radius * 2, radius * 2);
+
+var canvas = document.getElementById("canvasID");
+var ctx = canvas.getContext("2d");
+var canvasData = ctx.createImageData(500, 500);
+drawShape(flatCube, canvasData, 0, 0, 0, 255);
+ctx.putImageData(canvasData, 0, 0);
