@@ -1,28 +1,4 @@
-function createArray(dimension, size, value, array)
-{
-	if (array == null || array == undefined)
-	{
-		array = new Array();
-	}
-	if (dimension == 1)
-	{
-		for (index = 0; index < size; index = index + 1)
-		{
-			array[index] = value;
-		}
-	}
-	else
-	{
-		var indexLoop; // previously, the problem was that a new variable wasn't being declared, so the recursive function used the same iterators in the for loops
-		for (indexLoop = 0; indexLoop < size; indexLoop = indexLoop + 1)
-		{
-			array[indexLoop] = createArray(dimension - 1, size, value, array[indexLoop]); // previously, calling the recursive function with array rather than array[indexLoop] was faulty
-		}
-	}
-	return array;
-}
-
-
+/*
 function createCubeOld(radius, red, green, blue, alpha)
 {
 	var cube = createArray(3, radius, [0, 0, 0, 0]);
@@ -51,30 +27,7 @@ function createCubeOld(radius, red, green, blue, alpha)
 	return cube;
 }
 
-
-function createCube(radius)
-{
-	var cornerArray = new Array();
-	for (index = -radius; index < radius; index = index + 1)
-	{
-		cornerArray.push({"xPosition": -radius, "yPosition": -radius, "zPosition": index});
-		cornerArray.push({"xPosition": radius, "yPosition": -radius, "zPosition": index});
-		cornerArray.push({"xPosition": -radius, "yPosition": radius, "zPosition": index});
-		cornerArray.push({"xPosition": radius, "yPosition": radius, "zPosition": index});
-		cornerArray.push({"xPosition": -radius, "yPosition": index, "zPosition": -radius});
-		cornerArray.push({"xPosition": radius, "yPosition": index, "zPosition": -radius});
-		cornerArray.push({"xPosition": -radius, "yPosition": index, "zPosition": radius});
-		cornerArray.push({"xPosition": radius, "yPosition": index, "zPosition": radius});
-		cornerArray.push({"xPosition": index, "yPosition": -radius, "zPosition": -radius});
-		cornerArray.push({"xPosition": index, "yPosition": -radius, "zPosition": radius});
-		cornerArray.push({"xPosition": index, "yPosition": radius, "zPosition": -radius});
-		cornerArray.push({"xPosition": index, "yPosition": radius, "zPosition": radius});
-	}
-	return cornerArray;
-}
-
-
-function render3DOld(array, point, center)
+function convert3DOld(array, point, center)
 {
 //	var flatArray = createArray(2, Math.floor(Math.sqrt(2) * array.length) + 1, [0, 0, 0, 0]);
 
@@ -155,11 +108,68 @@ function render3DOld(array, point, center)
 	}
 	return cornerArray;
 }
+*/
+
+/*
+// old testing, disregard
+
+var square = createArray(3, 3, "value");
+console.log(square[0][0][0]); // keep in mind that when the array dimensions exceeds are higher, instead of displaying value, the console will display "object"
+
+var cube = createCubeOld(20, 255, 0, 0, 255);
+console.log(cube[0][0][0]);
+
+var flatCube = convert3DOld(cube, {"xPosition": 0, "yPosition": 10, "zPosition": 10}, {"xPosition": 10, "yPosition": 10, "zPosition": 10});
+console.log(flatCube);
+*/
 
 
+function createArray(dimension, size, value, array)
+{
+	if (array == null || array == undefined)
+	{
+		array = new Array();
+	}
+	if (dimension == 1)
+	{
+		for (index = 0; index < size; index = index + 1)
+		{
+			array[index] = value;
+		}
+	}
+	else
+	{
+		var indexLoop; // previously, the problem was that a new variable wasn't being declared, so the recursive function used the same iterators in the for loops
+		for (indexLoop = 0; indexLoop < size; indexLoop = indexLoop + 1)
+		{
+			array[indexLoop] = createArray(dimension - 1, size, value, array[indexLoop]); // previously, calling the recursive function with array rather than array[indexLoop] was faulty
+		}
+	}
+	return array;
+}
 
+function createCube(radius)
+{
+	var cornerArray = new Array();
+	for (index = -radius; index < radius; index = index + 1)
+	{
+		cornerArray.push({"xPosition": -radius, "yPosition": -radius, "zPosition": index});
+		cornerArray.push({"xPosition": radius, "yPosition": -radius, "zPosition": index});
+		cornerArray.push({"xPosition": -radius, "yPosition": radius, "zPosition": index});
+		cornerArray.push({"xPosition": radius, "yPosition": radius, "zPosition": index});
+		cornerArray.push({"xPosition": -radius, "yPosition": index, "zPosition": -radius});
+		cornerArray.push({"xPosition": radius, "yPosition": index, "zPosition": -radius});
+		cornerArray.push({"xPosition": -radius, "yPosition": index, "zPosition": radius});
+		cornerArray.push({"xPosition": radius, "yPosition": index, "zPosition": radius});
+		cornerArray.push({"xPosition": index, "yPosition": -radius, "zPosition": -radius});
+		cornerArray.push({"xPosition": index, "yPosition": -radius, "zPosition": radius});
+		cornerArray.push({"xPosition": index, "yPosition": radius, "zPosition": -radius});
+		cornerArray.push({"xPosition": index, "yPosition": radius, "zPosition": radius});
+	}
+	return cornerArray;
+}
 
-function render3D(array, radius, point, center)
+function convert3D(array, radius, point, center)
 {
 	var cornerArray = new Array();
 	var vector = 
@@ -170,7 +180,7 @@ function render3D(array, radius, point, center)
 	}
 	var perpendicular = 
 	{
-		"xComponent": Math.sqrt((vector.yComponent * vector.yComponent) / ((vector.xComponent * vector.xComponent) + (vector.yComponent * vector.yComponent))),
+		"xComponent": Math.sqrt((vector.yComponent * vector.yComponent) / ((vector.xComponent * vector.xComponent) + (vector.yComponent * vector.yComponent))), // using dot product and cross product, since if dot product == 0, vectors are orthogonal, and cross product returns a vector perpendicular to both vector inputs
 		"yComponent": Math.sqrt((vector.xComponent * vector.xComponent) / ((vector.xComponent * vector.xComponent) + (vector.yComponent * vector.yComponent))),
 		"zComponent": 0
 	}
@@ -180,35 +190,36 @@ function render3D(array, radius, point, center)
 		"yComponent": vector.zComponent * perpendicular.xComponent - vector.xComponent * perpendicular.zComponent,
 		"zComponent": vector.xComponent * perpendicular.yComponent - vector.yComponent * perpendicular.xComponent
 	}
-	var shift = new Array(); // shift is a grid array, meaning it represents the plane from the perspective/point you're viewing
-	for (index = Math.floor(Math.sqrt(2) * (-radius)); index < Math.sqrt(2) * (radius); index = index + 1)
+	var factor = Math.sqrt(normal.xComponent * normal.xComponent + normal.yComponent * normal.yComponent + normal.zComponent * normal.zComponent); // originally there was an error because after cross producting the vector and its perpendicular, the magnitude/length of the vector was not 1, but it needs to be in order to create a correct grid
+	normal.xComponent = normal.xComponent / factor;
+	normal.yComponent = normal.yComponent / factor;
+	normal.zComponent = normal.zComponent / factor;
+	var shift = new Array(); // shift is a grid array, meaning it represents the values of the plane from the perspective/point you're viewing
+	for (var index = Math.floor(Math.sqrt(3) * (-radius)); index < Math.sqrt(3) * (radius); index = index + 1)
 	{
 		shift.push(index);
 	}
 	var tempPoint;
-	for (indexA = 0; indexA < shift.length; indexA = indexA + 1)
+	var tolerance = 0.05
+	for (var indexA = 0; indexA < shift.length; indexA = indexA + 1)
 	{
-		for (indexB = 0; indexB < shift.length; indexB = indexB + 1)
+		for (var indexB = 0; indexB < shift.length; indexB = indexB + 1)
 		{
 			tempPoint = 
 			{
-				"xPosition": point.xPosition + (shift[indexA] * perpendicular.xComponent + shift[indexB] * normal.xComponent),
+				"xPosition": point.xPosition + (shift[indexA] * perpendicular.xComponent + shift[indexB] * normal.xComponent), // shifting by perpendicular (x on the tempPlane) and the normal (y on the tempPlane)
 				"yPosition": point.yPosition + (shift[indexA] * perpendicular.yComponent + shift[indexB] * normal.yComponent),
 				"zPosition": point.zPosition + (shift[indexA] * perpendicular.zComponent + shift[indexB] * normal.zComponent)
 			}
-			for (index = 0; index < array.length; index = index + 1) // it's because vector components are too large
+			for (var index = 0; index < array.length; index = index + 1) // it's because vector components are too large
 			{
 				var diffX = vector.xComponent / (tempPoint.xPosition - array[index].xPosition);
 				var diffY = vector.yComponent / (tempPoint.yPosition - array[index].yPosition);
 				var diffZ = vector.zComponent / (tempPoint.zPosition - array[index].zPosition);
-				if (diffX / diffY < 1.05 && diffX / diffY > 0.95 && diffX / diffZ < 1.05 && diffX / diffZ > 0.95 && diffZ / diffY < 1.05 && diffZ / diffY > 0.95)
+				if (diffX / diffY < 1 + tolerance && diffX / diffY > 1 - tolerance && diffX / diffZ < 1 + tolerance && diffX / diffZ > 1 - tolerance && diffZ / diffY < 1 + tolerance && diffZ / diffY > 1 - tolerance)
 				{
 					cornerArray.push({"xPosition": shift[indexA], "yPosition": shift[indexB]});
 				}
-//				if ((Math.abs(tempPoint.xPosition - array[index].xPosition - vector.xComponent) < 1 && Math.abs(tempPoint.yPosition - array[index].yPosition - vector.yComponent) < 1 && Math.abs(tempPoint.zPosition - array[index].zPosition - vector.zComponent) < 1) || (Math.abs(tempPoint.xPosition - array[index].xPosition + vector.xComponent) < 1 && Math.abs(tempPoint.yPosition - array[index].yPosition + vector.yComponent) < 1 && Math.abs(tempPoint.zPosition - array[index].zPosition + vector.zComponent) < 1)) // if the vectors are approximately the same
-//				{
-//					cornerArray.push({"xPosition": shift[indexA], "yPosition": shift[indexB]});
-//				}
 			}
 		}
 	}
@@ -216,17 +227,8 @@ function render3D(array, radius, point, center)
 }
 
 
-
-
-// var square = createArray(3, 3, "value");
-// console.log(square[0][0][0]); // keep in mind that when the array dimensions exceeds are higher, instead of displaying value, the console will display "object"
-
-// var cube = createCubeOld(20, 255, 0, 0, 255);
-// console.log(cube[0][0][0]);
-
-// var flatCube = render3DOld(cube, {"xPosition": 0, "yPosition": 10, "zPosition": 10}, {"xPosition": 10, "yPosition": 10, "zPosition": 10});
-// console.log(flatCube);
-
-var cube = createCube(50);
-var flatCube = render3D(cube, 50, {"xPosition": 67, "yPosition": -58, "zPosition": -41}, {"xPosition": 0, "yPosition": 0, "zPosition": 0})
-console.log(flatCube);
+var radius = 50;
+var cube = createCube(radius);
+var flatCube = convert3D(cube, 50, {"xPosition": tempX, "yPosition": tempY, "zPosition": tempZ}, {"xPosition": 0, "yPosition": 0, "zPosition": 0});
+flatCube = removeDuplicates(flatCube);
+flatCube = shiftArray(flatCube, radius * 2, radius * 2);
