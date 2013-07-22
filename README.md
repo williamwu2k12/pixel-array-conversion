@@ -14,7 +14,14 @@ Purpose:
 ----------------------------------------------------------------------------------------------------
 
 Instructions:
+- navigate to http://jsfiddle.net/KbUSR/
 - use jsfiddle or create html page with following:
 	- html: "<canvas id="canvasID" width:"500" height:"500"></canvas>" (without quotes)
 	- css: null
-	- javascript: contents of "Pixel Array Conversion.js"
+	- javascript: contents of "Main.js"
+
+----------------------------------------------------------------------------------------------------
+
+Bugs:
+07-20-13: flattened cube is stretched or unviewable at some points, particularly those closer to 0, 0, 0
+07-20-13: animate not working properly, possibly because the render and calculate time is roughly 3 seconds
