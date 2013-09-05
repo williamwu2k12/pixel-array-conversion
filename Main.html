@@ -256,11 +256,11 @@ function removeDuplicates(cornerArray)
 
 $(document).ready(function()
 {
-	var tempX = 50 // 67 // 67
-	var tempY = 3 // 20 // -58
-	var tempZ = 50 // 52 // -41
+	var tempX = -3;
+	var tempY = 2;
+	var tempZ = 12;
 
-	var radius = 50 // 50
+	var radius = 30;
 
 /*	var pyramid = createPyramid(radius);
 	var flatPyramid = convert3d(pyramid, radius, {"xPosition": tempX, "yPosition": tempY, "zPosition": tempZ}, {"xPosition": 0, "yPosition": 0, "zPosition": 0});
@@ -273,7 +273,7 @@ $(document).ready(function()
 	drawShape(flatPyramid, canvasData, 0, 0, 0, 255);
 	ctx.putImageData(canvasData, 0, 0);*/
 	var cube = createCube(radius);
-	var flatCube = convert3D(cube, radius, {"xPosition": tempX, "yPosition": tempY, "zPosition": tempZ}, {"xPosition": 0, "yPosition": 0, "zPosition": 0}, 0.05);
+	var flatCube = convert3D(cube, radius, {"xPosition": tempX, "yPosition": tempY, "zPosition": tempZ}, {"xPosition": 0, "yPosition": 0, "zPosition": 0}, 0.1);
 	flatCube = removeDuplicates(flatCube);
 	flatCube = shiftArray(flatCube, radius * 2, radius * 2);
 
